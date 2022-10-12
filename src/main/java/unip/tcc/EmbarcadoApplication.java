@@ -12,11 +12,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import unip.tcc.service.ComunicacaoSerial;
+
 @SpringBootApplication
 @EnableAsync
 public class EmbarcadoApplication {
 	
-	@Autowired MainClass mainClass;
+	@Autowired ComunicacaoSerial mainClass;
 
 	public static void main(String[] args) {
 		 ApplicationContext context = new SpringApplicationBuilder(EmbarcadoApplication.class)
