@@ -178,8 +178,17 @@ public class Instalador extends JFrame {
 				lblComandoEnviado.setVisible(true);
 			}
 		});
-		btnReset_1.setBounds(406, 315, 105, 27);
+		btnReset_1.setBounds(249, 315, 105, 27);
 		contentPane.add(btnReset_1);
+		
+		JButton btnLog = new JButton("Log");
+		btnLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TextAreaOutputStreamPanel.load();
+			}
+		});
+		btnLog.setBounds(416, 315, 105, 27);
+		contentPane.add(btnLog);
 		
 		JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
 	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
