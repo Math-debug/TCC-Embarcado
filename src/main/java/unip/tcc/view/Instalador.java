@@ -3,6 +3,7 @@ package unip.tcc.view;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintStream;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -11,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,10 @@ import org.springframework.scheduling.annotation.Async;
 
 import unip.tcc.core.Comandos;
 import unip.tcc.service.ComunicacaoSerial;
+import unip.tcc.view.log.TextAreaOutputStream;
 import unip.tcc.view.log.TextAreaOutputStreamPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class Instalador extends JFrame {
 
@@ -32,6 +37,10 @@ public class Instalador extends JFrame {
 
 	private ButtonGroup grupo1;
 	private ButtonGroup grupo2;
+	
+	 private JTextArea textArea = new JTextArea(15, 30);
+	   private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
+	         textArea, "Log");
 
 	/**
 	 * Launch the application.
@@ -58,7 +67,7 @@ public class Instalador extends JFrame {
 		setTitle("Instalador");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 420);
+		setBounds(100, 100, 600, 520);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -137,7 +146,7 @@ public class Instalador extends JFrame {
 
 		JLabel lblComandoEnviado = new JLabel("Comando enviado");
 		lblComandoEnviado.setVisible(false);
-		lblComandoEnviado.setBounds(178, 362, 114, 17);
+		lblComandoEnviado.setBounds(249, 362, 114, 17);
 		contentPane.add(lblComandoEnviado);
 
 		JButton btnReset = new JButton("Reset");
@@ -149,7 +158,7 @@ public class Instalador extends JFrame {
 				lblComandoEnviado.setVisible(true);
 			}
 		});
-		btnReset.setBounds(42, 315, 105, 27);
+		btnReset.setBounds(84, 315, 105, 27);
 		contentPane.add(btnReset);
 
 		JButton btnReset_1 = new JButton("Salvar");
@@ -169,16 +178,23 @@ public class Instalador extends JFrame {
 				lblComandoEnviado.setVisible(true);
 			}
 		});
-		btnReset_1.setBounds(178, 315, 105, 27);
+		btnReset_1.setBounds(406, 315, 105, 27);
 		contentPane.add(btnReset_1);
+		
+		JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(23, 391, 565, 88);
+		contentPane.add(scrollPane);
+		System.setOut(new PrintStream(taOutputStream));
 
-		JButton btnReset_1_1 = new JButton("Log");
-		btnReset_1_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TextAreaOutputStreamPanel.load();
-			}
-		});
-		btnReset_1_1.setBounds(317, 315, 105, 27);
-		contentPane.add(btnReset_1_1);
+	      int timerDelay = 1000;
+	      new Timer(timerDelay , new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent arg0) {
+
+	            // though this outputs via System.out.println, it actually displays
+	            // in the JTextArea:
+	         }
+	      }).start();
 	}
 }
