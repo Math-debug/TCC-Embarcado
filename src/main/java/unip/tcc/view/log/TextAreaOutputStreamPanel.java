@@ -18,8 +18,7 @@ import org.springframework.scheduling.annotation.Async;
 public class TextAreaOutputStreamPanel extends JPanel {
 
    private JTextArea textArea = new JTextArea(15, 30);
-   private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
-         textArea, "Log");
+   private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(textArea);
 
    public TextAreaOutputStreamPanel() {
       setLayout(new BorderLayout());

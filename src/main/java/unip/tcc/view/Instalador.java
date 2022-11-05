@@ -46,8 +46,7 @@ public class Instalador extends JFrame {
     private ButtonGroup enableTerra;
 
     private JTextArea textArea = new JTextArea(15, 30);
-    private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
-            textArea, "Log");
+    private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(textArea);
 
     /**
      * Launch the application.
