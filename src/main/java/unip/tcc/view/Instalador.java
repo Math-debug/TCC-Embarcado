@@ -4,206 +4,320 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 
 import unip.tcc.core.Comandos;
+import unip.tcc.entities.Configuracoes;
+import unip.tcc.repository.ConfiguracoesRepository;
 import unip.tcc.service.ComunicacaoSerial;
 import unip.tcc.view.log.TextAreaOutputStream;
 import unip.tcc.view.log.TextAreaOutputStreamPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 public class Instalador extends JFrame {
 
-	private ComunicacaoSerial serial;
+    @SuppressWarnings("unused")
+    private ComunicacaoSerial serial;
 
-	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+    private Configuracoes configDefault = new Configuracoes();
 
-	private ButtonGroup grupo1;
-	private ButtonGroup grupo2;
-	
-	 private JTextArea textArea = new JTextArea(15, 30);
-	   private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
-	         textArea, "Log");
+    private JPanel contentPane;
+    private JTextField fieldIdDoEquipamento;
+    private JTextField fieldIpJMS;
+    private JTextField fieldSsidRede;
+    private JTextField fieldPassword;
 
-	/**
-	 * Launch the application.
-	 */
-	@Async
-	public static void load(ComunicacaoSerial serial) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Instalador frame = new Instalador(serial);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    private ButtonGroup tipoRede;
+    private ButtonGroup enableNeutro;
+    private ButtonGroup enableTerra;
 
-	/**
-	 * Create the frame.
-	 */
-	public Instalador(ComunicacaoSerial serial) {
-		this.serial = serial;
-		setTitle("Instalador");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 520);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    private JTextArea textArea = new JTextArea(15, 30);
+    private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
+            textArea, "Log");
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+    /**
+     * Launch the application.
+     */
+    @Async
+    public static void load(ComunicacaoSerial serial, ConfiguracoesRepository configuracoesRepository) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    Instalador frame = new Instalador(serial, configuracoesRepository);
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
-		JLabel lblIdDoEquipamento = new JLabel("Id do Equipamento:");
-		lblIdDoEquipamento.setBounds(106, 12, 118, 17);
-		contentPane.add(lblIdDoEquipamento);
+    /**
+     * Create the frame.
+     */
+    public Instalador(ComunicacaoSerial serial, ConfiguracoesRepository configuracoesRepository) {
+        this.serial = serial;
+        setTitle("Instalador");
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 600, 520);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		textField = new JTextField();
-		textField.setBounds(229, 10, 114, 21);
-		contentPane.add(textField);
-		textField.setColumns(10);
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-		JLabel lblIdDoEquipamento_1 = new JLabel("IP JMS:");
-		lblIdDoEquipamento_1.setBounds(106, 49, 118, 17);
-		contentPane.add(lblIdDoEquipamento_1);
+        JLabel lblIdDoEquipamento = new JLabel("Id do Equipamento:");
+        lblIdDoEquipamento.setBounds(106, 12, 118, 17);
+        contentPane.add(lblIdDoEquipamento);
 
-		JLabel lblIdDoEquipamento_2 = new JLabel("SSID da Rede:");
-		lblIdDoEquipamento_2.setBounds(106, 91, 118, 17);
-		contentPane.add(lblIdDoEquipamento_2);
+        JLabel lblIpJMS = new JLabel("IP JMS:");
+        lblIpJMS.setBounds(106, 49, 118, 17);
+        contentPane.add(lblIpJMS);
 
-		JLabel lblIdDoEquipamento_3 = new JLabel("Senha da Rede:");
-		lblIdDoEquipamento_3.setBounds(106, 135, 118, 17);
-		contentPane.add(lblIdDoEquipamento_3);
+        JLabel lblSsidRede = new JLabel("SSID da Rede:");
+        lblSsidRede.setBounds(106, 91, 118, 17);
+        contentPane.add(lblSsidRede);
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(229, 47, 114, 21);
-		contentPane.add(textField_1);
+        JLabel lblPassword = new JLabel("Senha da Rede:");
+        lblPassword.setBounds(106, 135, 118, 17);
+        contentPane.add(lblPassword);
 
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(229, 89, 114, 21);
-		contentPane.add(textField_2);
+        fieldIdDoEquipamento = new JTextField();
+        fieldIdDoEquipamento.setBounds(229, 10, 291, 21);
+        contentPane.add(fieldIdDoEquipamento);
+        fieldIdDoEquipamento.setColumns(10);
 
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(229, 133, 114, 21);
-		contentPane.add(textField_3);
+        fieldIpJMS = new JTextField();
+        fieldIpJMS.setColumns(10);
+        fieldIpJMS.setBounds(229, 47, 291, 21);
+        contentPane.add(fieldIpJMS);
 
-		JLabel lblIdDoEquipamento_3_1 = new JLabel("Rede:");
-		lblIdDoEquipamento_3_1.setBounds(106, 177, 118, 17);
-		contentPane.add(lblIdDoEquipamento_3_1);
+        fieldSsidRede = new JTextField();
+        fieldSsidRede.setColumns(10);
+        fieldSsidRede.setBounds(229, 89, 291, 21);
+        contentPane.add(fieldSsidRede);
 
-		JRadioButton rdbtnAtivado = new JRadioButton("Monofásica");
-		rdbtnAtivado.setBounds(217, 173, 130, 25);
-		contentPane.add(rdbtnAtivado);
+        fieldPassword = new JTextField();
+        fieldPassword.setColumns(10);
+        fieldPassword.setBounds(229, 133, 291, 21);
+        contentPane.add(fieldPassword);
 
-		JRadioButton rdbtnDesativado = new JRadioButton("Bifásica");
-		rdbtnDesativado.setSelected(true);
-		rdbtnDesativado.setBounds(217, 199, 130, 25);
+        JLabel lblTipoRede = new JLabel("Rede:");
+        lblTipoRede.setBounds(111, 177, 49, 17);
+        contentPane.add(lblTipoRede);
 
-		grupo1 = new ButtonGroup();
-		grupo1.add(rdbtnAtivado);
-		grupo1.add(rdbtnDesativado);
-		contentPane.add(rdbtnDesativado);
+        JRadioButton tipoRedeM = new JRadioButton("Monofásica");
+        tipoRedeM.setBounds(174, 173, 93, 25);
+        contentPane.add(tipoRedeM);
 
-		JLabel lblIdDoEquipamento_3_1_1 = new JLabel("Neutro:");
-		lblIdDoEquipamento_3_1_1.setBounds(106, 232, 118, 17);
-		contentPane.add(lblIdDoEquipamento_3_1_1);
+        JRadioButton tipoRedeB = new JRadioButton("Bifásica");
+        tipoRedeB.setBounds(174, 202, 93, 25);
 
-		JRadioButton rdbtnAtivado_1 = new JRadioButton("Ativado");
-		rdbtnAtivado_1.setBounds(217, 228, 130, 25);
-		contentPane.add(rdbtnAtivado_1);
+        JRadioButton tipoRedeT = new JRadioButton("Trifásica");
+        tipoRedeT.setBounds(174, 231, 93, 25);
+        contentPane.add(tipoRedeT);
 
-		JRadioButton rdbtnAtivado_2 = new JRadioButton("Desativado");
-		rdbtnAtivado_2.setSelected(true);
-		rdbtnAtivado_2.setBounds(217, 257, 130, 25);
-		contentPane.add(rdbtnAtivado_2);
+        tipoRede = new ButtonGroup();
+        tipoRede.add(tipoRedeM);
+        tipoRede.add(tipoRedeB);
+        tipoRede.add(tipoRedeT);
+        contentPane.add(tipoRedeB);
 
-		grupo2 = new ButtonGroup();
-		grupo2.add(rdbtnAtivado_1);
-		grupo2.add(rdbtnAtivado_2);
+        JLabel lblNeutro = new JLabel("Neutro:");
+        lblNeutro.setBounds(347, 251, 61, 17);
+        contentPane.add(lblNeutro);
 
-		JLabel lblComandoEnviado = new JLabel("Comando enviado");
-		lblComandoEnviado.setVisible(false);
-		lblComandoEnviado.setBounds(249, 362, 114, 17);
-		contentPane.add(lblComandoEnviado);
+        JRadioButton neutroAtivo = new JRadioButton("Ativado");
+        neutroAtivo.setBounds(422, 247, 98, 25);
+        contentPane.add(neutroAtivo);
 
-		JButton btnReset = new JButton("Reset");
-		btnReset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Comandos command = new Comandos();
-				command.setComand("R");
-				serial.sendCommand(command);
-				lblComandoEnviado.setVisible(true);
-			}
-		});
-		btnReset.setBounds(84, 315, 105, 27);
-		contentPane.add(btnReset);
+        JRadioButton neutroDesativado = new JRadioButton("Desativado");
+        neutroDesativado.setBounds(422, 276, 98, 25);
+        contentPane.add(neutroDesativado);
 
-		JButton btnReset_1 = new JButton("Salvar");
-		btnReset_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Comandos command = new Comandos();
-				command.setEquipmentId(textField.getText());
-				command.setIpJMS(textField_1.getText());
-				command.setSSID(textField_2.getText());
-				command.setSenhaRede(textField_3.getText());
-				command.setComand("N");
-				command.setIsEnabledSystem("1");
-				command.setNeutroAtivo("1");
-				command.setTipoRede("M");
+        enableNeutro = new ButtonGroup();
+        enableNeutro.add(neutroAtivo);
+        enableNeutro.add(neutroDesativado);
 
-				serial.sendCommand(command);
-				lblComandoEnviado.setVisible(true);
-			}
-		});
-		btnReset_1.setBounds(249, 315, 105, 27);
-		contentPane.add(btnReset_1);
-		
-		JButton btnLog = new JButton("Log");
-		btnLog.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				TextAreaOutputStreamPanel.load();
-			}
-		});
-		btnLog.setBounds(416, 315, 105, 27);
-		contentPane.add(btnLog);
-		
-		JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-	            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(23, 391, 565, 88);
-		contentPane.add(scrollPane);
-		System.setOut(new PrintStream(taOutputStream));
+        JLabel lblTerra = new JLabel("Terra:");
+        lblTerra.setBounds(347, 177, 61, 17);
+        contentPane.add(lblTerra);
 
-	      int timerDelay = 1000;
-	      new Timer(timerDelay , new ActionListener() {
-	         @Override
-	         public void actionPerformed(ActionEvent arg0) {
+        JRadioButton terraAtivo = new JRadioButton("Ativado");
+        terraAtivo.setBounds(422, 173, 98, 25);
+        contentPane.add(terraAtivo);
 
-	            // though this outputs via System.out.println, it actually displays
-	            // in the JTextArea:
-	         }
-	      }).start();
-	}
+        JRadioButton terraDesativado = new JRadioButton("Desativado");
+        terraDesativado.setBounds(422, 202, 98, 25);
+        contentPane.add(terraDesativado);
+
+        enableTerra = new ButtonGroup();
+        enableTerra.add(terraAtivo);
+        enableTerra.add(terraDesativado);
+
+//        JLabel lblComandoEnviado = new JLabel("Comando enviado");
+//        lblComandoEnviado.setVisible(false);
+//        lblComandoEnviado.setBounds(249, 362, 114, 17);
+//        contentPane.add(lblComandoEnviado);
+
+        JButton btnReset = new JButton("Reset");
+        btnReset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Comandos command = new Comandos();
+                command.setComand("R");
+                serial.sendCommand(command);
+                JOptionPane.showMessageDialog(contentPane, "Comando Enviado");
+                configDefault.setEquipmentId("");
+                configDefault.setIpJMS("");
+                configDefault.setSSID("");
+                configDefault.setSenhaRede("");
+                if (neutroAtivo.isSelected()) {
+                    configDefault.setNeutroAtivo("1");
+                } else {
+                    configDefault.setNeutroAtivo("0");
+                }
+                if (tipoRedeB.isSelected()) {
+                    configDefault.setTipoRede("B");
+                } else if (tipoRedeM.isSelected()) {
+                    configDefault.setTipoRede("M");
+                }else {
+                    configDefault.setTipoRede("T");
+                }
+                if (terraAtivo.isSelected()) {
+                    configDefault.setTerraAtivo("1");
+                } else {
+                    configDefault.setTerraAtivo("0");
+                }
+                configDefault = configuracoesRepository.save(configDefault);
+            }
+        });
+        btnReset.setBounds(94, 323, 105, 27);
+        contentPane.add(btnReset);
+
+        JButton btnSalvar = new JButton("Salvar");
+        btnSalvar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Comandos command = new Comandos();
+                command.setEquipmentId(fieldIdDoEquipamento.getText());
+                command.setIpJMS(fieldIpJMS.getText());
+                command.setSSID(fieldSsidRede.getText());
+                command.setSenhaRede(fieldPassword.getText());
+                command.setComand("N");
+                command.setIsEnabledSystem("1");
+                if (neutroAtivo.isSelected()) {
+                    command.setNeutroAtivo("1");
+                } else {
+                    command.setNeutroAtivo("0");
+                }
+                if (tipoRedeB.isSelected()) {
+                    command.setTipoRede("B");
+                } else if (tipoRedeM.isSelected()) {
+                    command.setTipoRede("M");
+                }else {
+                    command.setTipoRede("T");
+                }
+                if (terraAtivo.isSelected()) {
+                    command.setTerraAtivo("1");
+                } else {
+                    command.setTerraAtivo("0");
+                }
+
+                serial.sendCommand(command);
+                JOptionPane.showMessageDialog(contentPane, "Comando Enviado");
+
+                configDefault.setEquipmentId(fieldIdDoEquipamento.getText());
+                configDefault.setIpJMS(fieldIpJMS.getText());
+                configDefault.setSSID(fieldSsidRede.getText());
+                configDefault.setSenhaRede(fieldPassword.getText());
+                if (neutroAtivo.isSelected()) {
+                    configDefault.setNeutroAtivo("1");
+                } else {
+                    configDefault.setNeutroAtivo("0");
+                }
+                if (tipoRedeB.isSelected()) {
+                    configDefault.setTipoRede("B");
+                } else if (tipoRedeM.isSelected()) {
+                    configDefault.setTipoRede("M");
+                }else {
+                    configDefault.setTipoRede("T");
+                }
+                if (terraAtivo.isSelected()) {
+                    configDefault.setTerraAtivo("1");
+                } else {
+                    configDefault.setTerraAtivo("0");
+                }
+                configDefault = configuracoesRepository.save(configDefault);
+            }
+        });
+        btnSalvar.setBounds(249, 323, 105, 27);
+        contentPane.add(btnSalvar);
+
+        JButton btnLog = new JButton("Log");
+        btnLog.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TextAreaOutputStreamPanel.load();
+            }
+        });
+        btnLog.setBounds(418, 323, 105, 27);
+        contentPane.add(btnLog);
+
+        JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(23, 391, 565, 88);
+        contentPane.add(scrollPane);
+
+        System.setOut(new PrintStream(taOutputStream));
+
+        int timerDelay = 1000;
+        new Timer(timerDelay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+
+                // though this outputs via System.out.println, it actually displays
+                // in the JTextArea:
+            }
+        }).start();
+
+        List<Configuracoes> configList = configuracoesRepository.findAll();
+        if (configList != null && !configList.isEmpty()) {
+            Configuracoes config = configList.get(0);
+            fieldIdDoEquipamento.setText(config.getEquipmentId());
+            fieldIpJMS.setText(config.getIpJMS());
+            fieldSsidRede.setText(config.getSSID());
+            fieldPassword.setText(config.getSenhaRede());
+            if (config.getTipoRede().equals("M")) {
+                tipoRedeM.setSelected(true);
+            } else if (config.getTipoRede().equals("B")) {
+                tipoRedeB.setSelected(true);
+            } else {
+                tipoRedeT.setSelected(true);
+            }
+            if (config.getNeutroAtivo().equals("1")) {
+                neutroAtivo.setSelected(true);
+            } else {
+                neutroDesativado.setSelected(true);
+            }
+            if (config.getTerraAtivo().equals("1")) {
+                terraAtivo.setSelected(true);
+            } else {
+                terraDesativado.setSelected(true);
+            }
+            configDefault = config;
+        }
+    }
 }

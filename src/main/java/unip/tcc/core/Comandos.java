@@ -9,6 +9,8 @@ public class Comandos {
 	private String isEnabledSystem;
 	private String tipoRede;
 	private String neutroAtivo;
+	private String terraAtivo;
+	
 	public String getComand() {
 		return comand;
 	}
@@ -81,6 +83,10 @@ public class Comandos {
 	public void setNeutroAtivo(String neutroAtivo) {
 		this.neutroAtivo = neutroAtivo;
 	}
-
-	
+    public String getTerraAtivo() {
+        return terraAtivo;
+    }
+    public void setTerraAtivo(String terraAtivo) {
+        this.terraAtivo = terraAtivo;
+    }
 }
