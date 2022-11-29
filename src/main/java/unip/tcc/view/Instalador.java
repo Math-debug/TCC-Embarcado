@@ -47,6 +47,8 @@ public class Instalador extends JFrame {
 
     private JTextArea textArea = new JTextArea(15, 30);
     private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(textArea);
+    private JTextField fieldGateway;
+    private JTextField fieldSubRede;
 
     /**
      * Launch the application.
@@ -58,6 +60,16 @@ public class Instalador extends JFrame {
                 try {
                     Instalador frame = new Instalador(serial, configuracoesRepository);
                     frame.setVisible(true);
+                    try {
+                        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                            if ("Nimbus".equals(info.getName())) {
+                                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                                break;
+                            }
+                        }
+                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+                        java.util.logging.Logger.getLogger(Instalador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -81,39 +93,39 @@ public class Instalador extends JFrame {
         contentPane.setLayout(null);
 
         JLabel lblIdDoEquipamento = new JLabel("Id do Equipamento:");
-        lblIdDoEquipamento.setBounds(106, 12, 118, 17);
+        lblIdDoEquipamento.setBounds(106, 4, 118, 17);
         contentPane.add(lblIdDoEquipamento);
 
-        JLabel lblIpJMS = new JLabel("IP JMS:");
-        lblIpJMS.setBounds(106, 49, 118, 17);
-        contentPane.add(lblIpJMS);
+        JLabel IP = new JLabel("IP:");
+        IP.setBounds(106, 29, 118, 17);
+        contentPane.add(IP);
 
         JLabel lblSsidRede = new JLabel("SSID da Rede:");
-        lblSsidRede.setBounds(106, 91, 118, 17);
+        lblSsidRede.setBounds(106, 105, 118, 17);
         contentPane.add(lblSsidRede);
 
         JLabel lblPassword = new JLabel("Senha da Rede:");
-        lblPassword.setBounds(106, 135, 118, 17);
+        lblPassword.setBounds(106, 131, 118, 17);
         contentPane.add(lblPassword);
 
         fieldIdDoEquipamento = new JTextField();
-        fieldIdDoEquipamento.setBounds(229, 10, 291, 21);
+        fieldIdDoEquipamento.setBounds(229, 2, 291, 21);
         contentPane.add(fieldIdDoEquipamento);
         fieldIdDoEquipamento.setColumns(10);
 
         fieldIpJMS = new JTextField();
         fieldIpJMS.setColumns(10);
-        fieldIpJMS.setBounds(229, 47, 291, 21);
+        fieldIpJMS.setBounds(229, 27, 291, 21);
         contentPane.add(fieldIpJMS);
 
         fieldSsidRede = new JTextField();
         fieldSsidRede.setColumns(10);
-        fieldSsidRede.setBounds(229, 89, 291, 21);
+        fieldSsidRede.setBounds(229, 103, 291, 21);
         contentPane.add(fieldSsidRede);
 
         fieldPassword = new JTextField();
         fieldPassword.setColumns(10);
-        fieldPassword.setBounds(229, 133, 291, 21);
+        fieldPassword.setBounds(229, 129, 291, 21);
         contentPane.add(fieldPassword);
 
         JLabel lblTipoRede = new JLabel("Rede:");
@@ -182,7 +194,7 @@ public class Instalador extends JFrame {
                 serial.sendCommand(command);
                 JOptionPane.showMessageDialog(contentPane, "Comando Enviado");
                 configDefault.setEquipmentId("");
-                configDefault.setIpJMS("");
+                configDefault.setIp("");
                 configDefault.setSSID("");
                 configDefault.setSenhaRede("");
                 if (neutroAtivo.isSelected()) {
@@ -218,6 +230,8 @@ public class Instalador extends JFrame {
                 command.setSenhaRede(fieldPassword.getText());
                 command.setComand("N");
                 command.setIsEnabledSystem("1");
+                command.setGateway(fieldGateway.getText());
+                command.setSubrede(fieldSubRede.getText());
                 if (neutroAtivo.isSelected()) {
                     command.setNeutroAtivo("1");
                 } else {
@@ -240,9 +254,11 @@ public class Instalador extends JFrame {
                 JOptionPane.showMessageDialog(contentPane, "Comando Enviado");
 
                 configDefault.setEquipmentId(fieldIdDoEquipamento.getText());
-                configDefault.setIpJMS(fieldIpJMS.getText());
+                configDefault.setIp(fieldIpJMS.getText());
                 configDefault.setSSID(fieldSsidRede.getText());
                 configDefault.setSenhaRede(fieldPassword.getText());
+                configDefault.setGateway(fieldGateway.getText());
+                configDefault.setSubrede(fieldSubRede.getText());
                 if (neutroAtivo.isSelected()) {
                     configDefault.setNeutroAtivo("1");
                 } else {
@@ -279,6 +295,24 @@ public class Instalador extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(23, 391, 565, 88);
         contentPane.add(scrollPane);
+        
+        JLabel gateway = new JLabel("Gateway:");
+        gateway.setBounds(106, 54, 118, 17);
+        contentPane.add(gateway);
+        
+        fieldGateway = new JTextField();
+        fieldGateway.setColumns(10);
+        fieldGateway.setBounds(229, 52, 291, 21);
+        contentPane.add(fieldGateway);
+        
+        JLabel mascaraRede = new JLabel("Máscara SubRede:");
+        mascaraRede.setBounds(106, 76, 118, 17);
+        contentPane.add(mascaraRede);
+        
+        fieldSubRede = new JTextField();
+        fieldSubRede.setColumns(10);
+        fieldSubRede.setBounds(229, 78, 291, 21);
+        contentPane.add(fieldSubRede);
 
         System.setOut(new PrintStream(taOutputStream));
 
@@ -296,7 +330,9 @@ public class Instalador extends JFrame {
         if (configList != null && !configList.isEmpty()) {
             Configuracoes config = configList.get(0);
             fieldIdDoEquipamento.setText(config.getEquipmentId());
-            fieldIpJMS.setText(config.getIpJMS());
+            fieldSubRede.setText(config.getSubrede());
+            fieldGateway.setText(config.getGateway());
+            fieldIpJMS.setText(config.getIp());
             fieldSsidRede.setText(config.getSSID());
             fieldPassword.setText(config.getSenhaRede());
             if (config.getTipoRede().equals("M")) {

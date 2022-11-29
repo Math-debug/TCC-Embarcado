@@ -71,7 +71,7 @@ public class ComunicacaoSerial {
     public void writeMessage(String mensagem) throws InterruptedException {
         try {
             activePort.writeBytes(mensagem.getBytes(), mensagem.length());
-            Thread.sleep(3000);
+            Thread.sleep(10000);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,6 +104,10 @@ public class ComunicacaoSerial {
                 comando.append(command.getNeutroAtivo());
                 comando.append(";");
                 comando.append(command.getTerraAtivo());
+                comando.append(";");
+                comando.append(command.getGateway());
+                comando.append(";");
+                comando.append(command.getSubrede());
                 comando.append(";");
 
                 writeMessage(comando.toString());

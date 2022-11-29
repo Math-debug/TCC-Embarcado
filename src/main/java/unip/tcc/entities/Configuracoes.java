@@ -17,8 +17,12 @@ public class Configuracoes implements Serializable{
     private Integer id;
     @Column(name="equipmentid")
     private String equipmentId;
-    @Column(name="ipjms")
-    private String ipJMS;
+    @Column(name="ip")
+    private String ip;
+    @Column(name="subrede")
+    private String subrede;
+    @Column(name="gateway")
+    private String gateway;
     @Column(name="SSID")
     private String SSID;
     @Column(name="password")
@@ -36,11 +40,11 @@ public class Configuracoes implements Serializable{
     public void setEquipmentId(String equipmentId) {
         this.equipmentId = equipmentId;
     }
-    public String getIpJMS() {
-        return ipJMS;
+    public String getIp() {
+        return ip;
     }
-    public void setIpJMS(String ipJMS) {
-        this.ipJMS = ipJMS;
+    public void setIp(String ipJMS) {
+        this.ip = ipJMS;
     }
     public String getSSID() {
         return SSID;
@@ -77,6 +81,18 @@ public class Configuracoes implements Serializable{
     }
     public void setId(Integer id) {
         this.id = id;
+    }
+    public String getSubrede() {
+        return subrede;
+    }
+    public void setSubrede(String subrede) {
+        this.subrede = subrede;
+    }
+    public String getGateway() {
+        return gateway;
+    }
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
     }
     
 }
