@@ -93,14 +93,14 @@ public class Comandos {
     public void setTerraAtivo(String terraAtivo) {
         this.terraAtivo = terraAtivo;
     }
-    public void setGateway(String ip) {
-        int x = ip.length();
+    public void setGateway(String gateway) {
+        int x = gateway.length();
         int y = 16-x;
         StringBuilder mensagem = new StringBuilder();
         for(int i=0;i < y;i++ ) {
             mensagem.append("0");
         }
-        this.ipJMS =  mensagem.toString() + ipJMS;
+        this.gateway =  mensagem.toString() + gateway;
     }
     public String getSubrede() {
         return subrede;
@@ -112,7 +112,7 @@ public class Comandos {
         for(int i=0;i < y;i++ ) {
             mensagem.append("0");
         }
-        this.ipJMS =  mensagem.toString() + ipJMS;
+        this.subrede =  mensagem.toString() + subrede;
     }
     public String getGateway() {
         return gateway;
