@@ -3,10 +3,16 @@ package unip.tcc.view;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,7 +32,6 @@ import unip.tcc.entities.Configuracoes;
 import unip.tcc.repository.ConfiguracoesRepository;
 import unip.tcc.service.ComunicacaoSerial;
 import unip.tcc.view.log.TextAreaOutputStream;
-import unip.tcc.view.log.TextAreaOutputStreamPanel;
 
 public class Instalador extends JFrame {
 
@@ -85,7 +90,7 @@ public class Instalador extends JFrame {
         setTitle("Instalador");
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 600, 520);
+        setBounds(100, 100, 604, 581);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -93,54 +98,54 @@ public class Instalador extends JFrame {
         contentPane.setLayout(null);
 
         JLabel lblIdDoEquipamento = new JLabel("Id do Equipamento:");
-        lblIdDoEquipamento.setBounds(106, 4, 118, 17);
+        lblIdDoEquipamento.setBounds(112, 91, 118, 17);
         contentPane.add(lblIdDoEquipamento);
 
         JLabel IP = new JLabel("IP:");
-        IP.setBounds(106, 29, 118, 17);
+        IP.setBounds(112, 116, 118, 17);
         contentPane.add(IP);
 
         JLabel lblSsidRede = new JLabel("SSID da Rede:");
-        lblSsidRede.setBounds(106, 105, 118, 17);
+        lblSsidRede.setBounds(112, 192, 118, 17);
         contentPane.add(lblSsidRede);
 
         JLabel lblPassword = new JLabel("Senha da Rede:");
-        lblPassword.setBounds(106, 131, 118, 17);
+        lblPassword.setBounds(112, 218, 118, 17);
         contentPane.add(lblPassword);
 
         fieldIdDoEquipamento = new JTextField();
-        fieldIdDoEquipamento.setBounds(229, 2, 291, 21);
+        fieldIdDoEquipamento.setBounds(235, 89, 291, 21);
         contentPane.add(fieldIdDoEquipamento);
         fieldIdDoEquipamento.setColumns(10);
 
         fieldIpJMS = new JTextField();
         fieldIpJMS.setColumns(10);
-        fieldIpJMS.setBounds(229, 27, 291, 21);
+        fieldIpJMS.setBounds(235, 114, 291, 21);
         contentPane.add(fieldIpJMS);
 
         fieldSsidRede = new JTextField();
         fieldSsidRede.setColumns(10);
-        fieldSsidRede.setBounds(229, 103, 291, 21);
+        fieldSsidRede.setBounds(235, 190, 291, 21);
         contentPane.add(fieldSsidRede);
 
         fieldPassword = new JTextField();
         fieldPassword.setColumns(10);
-        fieldPassword.setBounds(229, 129, 291, 21);
+        fieldPassword.setBounds(235, 216, 291, 21);
         contentPane.add(fieldPassword);
 
         JLabel lblTipoRede = new JLabel("Rede:");
-        lblTipoRede.setBounds(111, 177, 49, 17);
+        lblTipoRede.setBounds(98, 249, 49, 17);
         contentPane.add(lblTipoRede);
 
         JRadioButton tipoRedeM = new JRadioButton("Monofásica");
-        tipoRedeM.setBounds(174, 173, 93, 25);
+        tipoRedeM.setBounds(147, 245, 93, 25);
         contentPane.add(tipoRedeM);
 
         JRadioButton tipoRedeB = new JRadioButton("Bifásica");
-        tipoRedeB.setBounds(174, 202, 93, 25);
+        tipoRedeB.setBounds(147, 276, 93, 25);
 
         JRadioButton tipoRedeT = new JRadioButton("Trifásica");
-        tipoRedeT.setBounds(174, 231, 93, 25);
+        tipoRedeT.setBounds(147, 305, 93, 25);
         contentPane.add(tipoRedeT);
 
         tipoRede = new ButtonGroup();
@@ -150,15 +155,15 @@ public class Instalador extends JFrame {
         contentPane.add(tipoRedeB);
 
         JLabel lblNeutro = new JLabel("Neutro:");
-        lblNeutro.setBounds(347, 251, 61, 17);
+        lblNeutro.setBounds(347, 309, 61, 17);
         contentPane.add(lblNeutro);
 
         JRadioButton neutroAtivo = new JRadioButton("Ativado");
-        neutroAtivo.setBounds(422, 247, 98, 25);
+        neutroAtivo.setBounds(422, 305, 98, 25);
         contentPane.add(neutroAtivo);
 
         JRadioButton neutroDesativado = new JRadioButton("Desativado");
-        neutroDesativado.setBounds(422, 276, 98, 25);
+        neutroDesativado.setBounds(422, 334, 98, 25);
         contentPane.add(neutroDesativado);
 
         enableNeutro = new ButtonGroup();
@@ -166,15 +171,15 @@ public class Instalador extends JFrame {
         enableNeutro.add(neutroDesativado);
 
         JLabel lblTerra = new JLabel("Terra:");
-        lblTerra.setBounds(347, 177, 61, 17);
+        lblTerra.setBounds(347, 249, 61, 17);
         contentPane.add(lblTerra);
 
         JRadioButton terraAtivo = new JRadioButton("Ativado");
-        terraAtivo.setBounds(422, 173, 98, 25);
+        terraAtivo.setBounds(422, 245, 98, 25);
         contentPane.add(terraAtivo);
 
         JRadioButton terraDesativado = new JRadioButton("Desativado");
-        terraDesativado.setBounds(422, 202, 98, 25);
+        terraDesativado.setBounds(422, 276, 98, 25);
         contentPane.add(terraDesativado);
 
         enableTerra = new ButtonGroup();
@@ -217,7 +222,7 @@ public class Instalador extends JFrame {
                 configDefault = configuracoesRepository.save(configDefault);
             }
         });
-        btnReset.setBounds(94, 323, 105, 27);
+        btnReset.setBounds(90, 397, 105, 27);
         contentPane.add(btnReset);
 
         JButton btnSalvar = new JButton("Salvar");
@@ -279,40 +284,56 @@ public class Instalador extends JFrame {
                 configDefault = configuracoesRepository.save(configDefault);
             }
         });
-        btnSalvar.setBounds(249, 323, 105, 27);
+        btnSalvar.setBounds(253, 397, 105, 27);
         contentPane.add(btnSalvar);
 
         JButton btnLog = new JButton("Log");
         btnLog.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                TextAreaOutputStreamPanel.load();
+                //TextAreaOutputStreamPanel.load();
+                SimpleDateFormat format = new SimpleDateFormat("YYYYMMDDhhmmss");
+                String dataLog = format.format(new Date());
+                File log = new File(new File(dataLog + "-log.txt").getAbsolutePath());
+                JOptionPane.showMessageDialog(contentPane, "Log Gerado em "+ log);
+                try {
+                    FileOutputStream output = new FileOutputStream(log);
+                    output.write(textArea.getText().getBytes());
+                    output.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
-        btnLog.setBounds(418, 323, 105, 27);
+        btnLog.setBounds(415, 397, 105, 27);
         contentPane.add(btnLog);
 
         JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setBounds(23, 391, 565, 88);
+        scrollPane.setBounds(27, 452, 565, 88);
         contentPane.add(scrollPane);
         
         JLabel gateway = new JLabel("Gateway:");
-        gateway.setBounds(106, 54, 118, 17);
+        gateway.setBounds(112, 141, 118, 17);
         contentPane.add(gateway);
         
         fieldGateway = new JTextField();
         fieldGateway.setColumns(10);
-        fieldGateway.setBounds(229, 52, 291, 21);
+        fieldGateway.setBounds(235, 139, 291, 21);
         contentPane.add(fieldGateway);
         
         JLabel mascaraRede = new JLabel("Máscara SubRede:");
-        mascaraRede.setBounds(106, 76, 118, 17);
+        mascaraRede.setBounds(112, 163, 118, 17);
         contentPane.add(mascaraRede);
         
         fieldSubRede = new JTextField();
         fieldSubRede.setColumns(10);
-        fieldSubRede.setBounds(229, 78, 291, 21);
+        fieldSubRede.setBounds(235, 165, 291, 21);
         contentPane.add(fieldSubRede);
+        
+        JLabel lblNewLabel = new JLabel("SOFTWARE DE CONFIGURAÇÃO - MGE");
+        lblNewLabel.setIcon(new ImageIcon(Instalador.class.getResource("/unip/tcc/view/logo_resized.png")));
+        lblNewLabel.setBounds(174, 12, 300, 56);
+        contentPane.add(lblNewLabel);
 
         System.setOut(new PrintStream(taOutputStream));
 
