@@ -1,0 +1,7 @@
+<unip.tcc.config.XmlConfig>
+  <enableMonofasico>true</enableMonofasico>
+  <enableBifasico>true</enableBifasico>
+  <enableTrifasico>false</enableTrifasico>
+  <enableTerra>false</enableTerra>
+  <enableNeutro>false</enableNeutro>
+</unip.tcc.config.XmlConfig>

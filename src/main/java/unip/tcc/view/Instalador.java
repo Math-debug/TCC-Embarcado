@@ -27,6 +27,10 @@ import javax.swing.border.EmptyBorder;
 
 import org.springframework.scheduling.annotation.Async;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
+import unip.tcc.config.XmlConfig;
 import unip.tcc.core.Comandos;
 import unip.tcc.entities.Configuracoes;
 import unip.tcc.repository.ConfiguracoesRepository;
@@ -86,6 +90,15 @@ public class Instalador extends JFrame {
      * Create the frame.
      */
     public Instalador(ComunicacaoSerial serial, ConfiguracoesRepository configuracoesRepository) {
+        
+        File xml = new File(new File("config.xml").getAbsolutePath());
+        
+        Class<?>[] classes = new Class[] { XmlConfig.class };
+        XStream stream = new XStream(new DomDriver());
+        XStream.setupDefaultSecurity(stream);
+        stream.allowTypes(classes);
+        XmlConfig xmlConfig = (XmlConfig) stream.fromXML(xml);
+        
         this.serial = serial;
         setTitle("Instalador");
         setResizable(false);
@@ -139,13 +152,16 @@ public class Instalador extends JFrame {
 
         JRadioButton tipoRedeM = new JRadioButton("Monofásica");
         tipoRedeM.setBounds(147, 245, 93, 25);
+        tipoRedeM.setVisible(xmlConfig.getEnableMonofasico());
         contentPane.add(tipoRedeM);
 
         JRadioButton tipoRedeB = new JRadioButton("Bifásica");
         tipoRedeB.setBounds(147, 276, 93, 25);
+        tipoRedeB.setVisible(xmlConfig.getEnableBifasico());
 
         JRadioButton tipoRedeT = new JRadioButton("Trifásica");
         tipoRedeT.setBounds(147, 305, 93, 25);
+        tipoRedeT.setVisible(xmlConfig.getEnableTrifasico());
         contentPane.add(tipoRedeT);
 
         tipoRede = new ButtonGroup();
@@ -156,14 +172,20 @@ public class Instalador extends JFrame {
 
         JLabel lblNeutro = new JLabel("Neutro:");
         lblNeutro.setBounds(347, 309, 61, 17);
+        lblNeutro.setVisible(xmlConfig.getEnableNeutro());
         contentPane.add(lblNeutro);
 
         JRadioButton neutroAtivo = new JRadioButton("Ativado");
         neutroAtivo.setBounds(422, 305, 98, 25);
+        neutroAtivo.setVisible(xmlConfig.getEnableNeutro());
         contentPane.add(neutroAtivo);
 
         JRadioButton neutroDesativado = new JRadioButton("Desativado");
         neutroDesativado.setBounds(422, 334, 98, 25);
+        neutroDesativado.setVisible(xmlConfig.getEnableNeutro());
+        if(!xmlConfig.getEnableNeutro()) {
+            neutroDesativado.setSelected(true);
+        }
         contentPane.add(neutroDesativado);
 
         enableNeutro = new ButtonGroup();
@@ -172,14 +194,20 @@ public class Instalador extends JFrame {
 
         JLabel lblTerra = new JLabel("Terra:");
         lblTerra.setBounds(347, 249, 61, 17);
+        lblTerra.setVisible(xmlConfig.getEnableTerra());
         contentPane.add(lblTerra);
 
         JRadioButton terraAtivo = new JRadioButton("Ativado");
         terraAtivo.setBounds(422, 245, 98, 25);
+        terraAtivo.setVisible(xmlConfig.getEnableTerra());
         contentPane.add(terraAtivo);
 
         JRadioButton terraDesativado = new JRadioButton("Desativado");
         terraDesativado.setBounds(422, 276, 98, 25);
+        terraDesativado.setVisible(xmlConfig.getEnableTerra());
+        if(!xmlConfig.getEnableTerra()) {
+            terraDesativado.setSelected(true);
+        }
         contentPane.add(terraDesativado);
 
         enableTerra = new ButtonGroup();
